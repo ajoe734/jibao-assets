@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant" style="background:#111;height:100%;margin:0;padding:0;overflow:hidden">
+<html lang="zh-Hant" style="background:#111;color:#fff;height:100%;margin:0;padding:0">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
@@ -14,57 +14,55 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  html, body, #root { width: 100%; height: 100%; margin: 0; padding: 0; }
-  html, body { background: #111; font-family: 'PingFang TC', -apple-system, 'Noto Sans TC', 'Microsoft JhengHei', system-ui, sans-serif; }
-  body { overflow: hidden; }
-  *, *::before, *::after { box-sizing: border-box; }
-  .app-shell-mobile {
-    position: fixed;
-    top: 0; right: 0; bottom: 0; left: 0;
-    inset: 0;
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-    background: #111;
-  }
-  button { font-family: inherit; }
-  *::-webkit-scrollbar { width: 0; height: 0; }
-  /* visible-on-failure marker: red text shown until React replaces #root */
-  #boot-marker { position:fixed; inset:0; background:#111; color:#fff; font:14px monospace; padding:60px 16px 16px; z-index:1; }
-  #boot-marker.gone { display:none; }
+  html, body, #root { width:100%; height:100%; margin:0; padding:0; }
+  html, body { background:#111; color:#fff; font-family:'PingFang TC', -apple-system, 'Noto Sans TC', system-ui, sans-serif; }
+  body { overflow:hidden; }
+  *, *::before, *::after { box-sizing:border-box; }
+  .app-shell-mobile { position:fixed; top:0; right:0; bottom:0; left:0; inset:0; width:100%; height:100vh; height:100dvh; overflow:hidden; background:#111; }
+  button { font-family:inherit; }
+  *::-webkit-scrollbar { width:0; height:0; }
 </style>
 </head>
-<body style="background:#111;color:#fff;margin:0;padding:0">
-<div id="boot-marker">
-  <div id="boot-status">boot…</div>
-  <div id="boot-errors" style="color:#f88; white-space:pre-wrap; margin-top:8px"></div>
+<body style="background:#111;color:#fff;margin:0;padding:0;min-height:100vh">
+<!-- Pre-React boot diagnostic — uses ONLY inline styles, no CSS-rule dependency.
+     Will be hidden once #root has children. -->
+<div id="boot" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#111;color:#fff;font:16px/1.4 system-ui;padding:60px 16px 16px;z-index:1;overflow:auto">
+  <div style="color:#ffd700;font-size:28px;font-weight:bold;margin-bottom:16px">集寶 啟動中</div>
+  <div id="bs" style="color:#6f6;margin:4px 0">[1/5] HTML 解析</div>
+  <div id="be" style="color:#f88;white-space:pre-wrap;font-size:13px;margin-top:8px"></div>
+  <div id="bd" style="color:#888;font-size:12px;margin-top:16px">vp:<span id="bvp"></span>  standalone:<span id="bsa"></span></div>
 </div>
 <div id="root"></div>
 <script>
-  // capture any error so we can SEE it even in PWA standalone
-  (function(){
-    var bs = document.getElementById('boot-status');
-    var be = document.getElementById('boot-errors');
-    function log(msg){ if(bs) bs.textContent = msg; }
-    function err(e){
-      if (be) be.textContent += '\n' + (e?.message || e) + (e?.filename ? ' @ ' + e.filename : '');
-    }
-    window.addEventListener('error', function(e){ err(e); });
-    window.addEventListener('unhandledrejection', function(e){ err(e.reason); });
-    window.__bootLog = log;
-    log('html parsed');
-  })();
+(function(){
+  var bs = document.getElementById('bs');
+  var be = document.getElementById('be');
+  var step = function(n, total, msg){ if (bs) bs.textContent = '['+n+'/'+total+'] '+msg; };
+  window.__step = step;
+  window.addEventListener('error', function(e){ if (be) be.textContent += '\n× ' + (e?.message||e); });
+  window.addEventListener('unhandledrejection', function(e){ if (be) be.textContent += '\n× ' + (e?.reason?.message||e?.reason||e); });
+  var vp = window.visualViewport;
+  document.getElementById('bvp').textContent = vp ? Math.round(vp.width)+'x'+Math.round(vp.height) : innerWidth+'x'+innerHeight;
+  document.getElementById('bsa').textContent = (window.navigator.standalone===true) ? 'PWA' : (window.navigator.standalone===false ? 'Safari' : '?');
+  step(2, 5, 'JS 主控啟動');
+})();
 </script>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" onerror="__bootLog('react FAILED to load')" onload="__bootLog('react loaded')"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" onerror="__bootLog('react-dom FAILED to load')" onload="__bootLog('react-dom loaded')"></script>
-<script src="ios-frame.compiled.js" onerror="__bootLog('ios-frame FAILED to load')" onload="__bootLog('ios-frame loaded')"></script>
-<script src="app.compiled.js" onerror="__bootLog('app FAILED to load')" onload="
-  __bootLog('app loaded, mounting…');
-  setTimeout(function(){
-    var marker = document.getElementById('boot-marker');
-    if (marker && document.querySelector('#root')?.children.length > 0) marker.classList.add('gone');
-  }, 50);
-"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+        onload="__step(3,5,'React 載入')" onerror="document.getElementById('be').textContent += '\n× React 載入失敗'"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+        onload="__step(4,5,'ReactDOM 載入')" onerror="document.getElementById('be').textContent += '\n× ReactDOM 載入失敗'"></script>
+<script src="ios-frame.compiled.js"
+        onload="__step(4,5,'ios-frame 載入')" onerror="document.getElementById('be').textContent += '\n× ios-frame 載入失敗'"></script>
+<script src="app.compiled.js"
+        onload="
+          __step(5,5,'app 載入，渲染中…');
+          setTimeout(function(){
+            var b = document.getElementById('boot');
+            var r = document.getElementById('root');
+            if (b && r && r.children.length > 0) { b.style.display='none'; }
+            else if (document.getElementById('be')) { document.getElementById('be').textContent += '\n× React 沒有 mount (#root 是空的)'; }
+          }, 80);
+        "
+        onerror="document.getElementById('be').textContent += '\n× app 載入失敗'"></script>
 </body>
 </html>
