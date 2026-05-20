@@ -340,19 +340,22 @@ function StatusOverlay() {
 
 function TabBarRow({ tabs }) {
   return (
-    <div style={{
+    <nav style={{
+      position: 'fixed',
+      bottom: 0, left: 0, right: 0,
+      zIndex: 50,
       background: '#111',
-      paddingBottom: 16,
+      paddingBottom: 'calc(env(safe-area-inset-bottom) + 6px)',
     }}>
       <div style={{
-        height: 49,
+        height: 56,
         display: 'grid',
         gridTemplateColumns: 'repeat(5, 1fr)',
+        alignItems: 'center',
       }}>
         {tabs.map(t => (
           <div key={t.key} style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
-            paddingBottom: 2, gap: 2,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
             cursor: 'pointer',
           }}>
             <TabIcon name={t.key} active={t.active}/>
@@ -364,7 +367,7 @@ function TabBarRow({ tabs }) {
           </div>
         ))}
       </div>
-    </div>
+    </nav>
   );
 }
 
@@ -381,7 +384,7 @@ function Screen({ hideStatus = false }) {
     <div style={{
       width: '100%', height: '100%',
       display: 'grid',
-      gridTemplateRows: 'auto minmax(0, 1fr) auto',
+      gridTemplateRows: 'auto minmax(0, 1fr)',
       overflow: 'hidden',
       background: 'linear-gradient(180deg, #1F3A8A 0%, #2456B5 35%, #3F75D0 70%, #6FA3DC 100%)',
       fontFamily: '"PingFang TC", -apple-system, "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif',
@@ -427,7 +430,7 @@ function Screen({ hideStatus = false }) {
         minHeight: 0,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
-        padding: '0 10px 16px',
+        padding: '0 10px calc(env(safe-area-inset-bottom) + 80px)',
       }}>
         {/* Securities card */}
         <div style={{
