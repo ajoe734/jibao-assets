@@ -340,12 +340,28 @@ function StatusOverlay() {
 
 function TabBarRow({ tabs }) {
   return (
-    <nav style={{
+    <nav ref={el => {
+      if (el && !el.dataset.measured) {
+        el.dataset.measured = '1';
+        const tag = document.createElement('div');
+        tag.style.cssText = 'position:fixed;left:8px;top:60px;z-index:9999;background:rgba(255,0,0,0.85);color:#fff;font:bold 13px monospace;padding:6px 10px;border-radius:6px;pointer-events:none;';
+        const update = () => {
+          const r = el.getBoundingClientRect();
+          const vv = window.visualViewport;
+          tag.textContent = 'nav: ' + Math.round(r.height) + 'pt  vp.h:' + Math.round(vv?.height||window.innerHeight) + '  dpr:' + (window.devicePixelRatio||1);
+        };
+        update();
+        window.visualViewport?.addEventListener('resize', update);
+        window.visualViewport?.addEventListener('scroll', update);
+        document.body.appendChild(tag);
+      }
+    }} style={{
       position: 'fixed',
       bottom: 0, left: 0, right: 0,
       zIndex: 50,
       background: '#111',
       paddingBottom: 8,
+      borderTop: '2px solid red',
     }}>
       <div style={{
         height: 56,
