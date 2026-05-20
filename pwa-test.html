@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" style="background:#111;color:#fff;height:100%;margin:0;padding:0">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>PWA TEST</title>
+<style>
+  body { background: #111; color: #fff; font-family: system-ui; padding: 80px 16px; margin: 0; min-height: 100vh; }
+  h1 { color: #ffd700; font-size: 32px; margin: 0 0 24px; }
+  .row { font-size: 18px; margin: 8px 0; word-break: break-all; }
+  .ok { color: #6f6; }
+  .err { color: #f88; }
+</style>
+</head>
+<body>
+<h1>PWA 測試頁</h1>
+<div class="row ok">✓ HTML 載入成功</div>
+<div class="row">URL: <span id="u"></span></div>
+<div class="row">UA: <span id="a" style="font-size:12px"></span></div>
+<div class="row">standalone: <span id="s"></span></div>
+<div class="row">vp: <span id="v"></span></div>
+<div class="row">date: <span id="d"></span></div>
+<script>
+  document.getElementById('u').textContent = location.href;
+  document.getElementById('a').textContent = navigator.userAgent;
+  document.getElementById('s').textContent = window.navigator.standalone === true ? 'YES (PWA)' : (window.navigator.standalone === false ? 'NO (Safari)' : 'undefined');
+  document.getElementById('v').textContent = (window.visualViewport ? Math.round(window.visualViewport.width)+'x'+Math.round(window.visualViewport.height) : innerWidth+'x'+innerHeight);
+  document.getElementById('d').textContent = new Date().toISOString();
+</script>
+</body>
+</html>
