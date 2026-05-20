@@ -345,7 +345,7 @@ function TabBarRow({ tabs }) {
       bottom: 0, left: 0, right: 0,
       zIndex: 50,
       background: '#111',
-      paddingBottom: 'calc(env(safe-area-inset-bottom) + 6px)',
+      paddingBottom: 8,
     }}>
       <div style={{
         height: 56,
@@ -430,7 +430,7 @@ function Screen({ hideStatus = false }) {
         minHeight: 0,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
-        padding: '0 10px calc(env(safe-area-inset-bottom) + 80px)',
+        padding: '0 10px 80px',
       }}>
         {/* Securities card */}
         <div style={{
