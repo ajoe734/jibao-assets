@@ -345,13 +345,14 @@ function TabBarRow({ tabs }) {
       paddingBottom: 'env(safe-area-inset-bottom)',
     }}>
       <div style={{
-        height: 78,
+        height: 56,
         display: 'grid',
         gridTemplateColumns: 'repeat(5, 1fr)',
       }}>
         {tabs.map(t => (
           <div key={t.key} style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
+            paddingBottom: 4, gap: 3,
             cursor: 'pointer',
           }}>
             <TabIcon name={t.key} active={t.active}/>
