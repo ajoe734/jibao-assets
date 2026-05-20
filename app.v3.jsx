@@ -342,7 +342,7 @@ function TabBarRow({ tabs }) {
   return (
     <div style={{
       background: '#111',
-      paddingBottom: 'min(env(safe-area-inset-bottom), 24px)',
+      paddingBottom: 16,
     }}>
       <div style={{
         height: 49,
